@@ -2,6 +2,6 @@ __pycache__
 .history
 .hypothesis/
 .env
-.DS_STORE
+.DS_Store
 build/
 reports/
