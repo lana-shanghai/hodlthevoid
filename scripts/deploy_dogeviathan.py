@@ -9,6 +9,7 @@ def main():
         config["networks"][network.show_active()]["vrf_coordinator"],
         config["networks"][network.show_active()]["link_token"],
         config["networks"][network.show_active()]["keyhash"],
-        {"from": accounts[0]}
+        {"from": accounts[0]},
+        publish_source=True
     )
     return dogeviathan
