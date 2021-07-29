@@ -22,8 +22,8 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
         uint256 justice;
     }
     mapping(bytes32 => address) public requestIdToSender;
-    mapping(bytes32 => string) public requestIdToTokenURI;
     mapping(uint256 => Void) public tokenIdToVoid;
+    mapping(uint256 => address) public tokenIdToOwner;
     mapping(uint256 => uint256) public tokenIdToRand;
     mapping(bytes32 => uint256) public requestIdToTokenId;
     event requestedCollectible(bytes32 indexed requestId);
@@ -49,7 +49,7 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
         return lastPrice;
     }
 
-    function createCollectible(string memory tokenURI)
+    function createCollectible()
     public payable returns (bytes32) 
     {
         require(block.timestamp >= SALE_START_TIMESTAMP, "Sale has not started");
@@ -58,7 +58,6 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
         lastPrice = lastPrice * 1008 / 1000;
         bytes32 requestId = requestRandomness(keyHash, fee);
         requestIdToSender[requestId] = msg.sender;
-        requestIdToTokenURI[requestId] = tokenURI;
         emit requestedCollectible(requestId);
     }
 
@@ -93,25 +92,31 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
     internal override
     {
        address voidOwner = requestIdToSender[requestId];
-       string memory tokenURI = requestIdToTokenURI[requestId];
        uint256 lastTokenId = tokenCounter;
        _safeMint(voidOwner, lastTokenId);
-       _setTokenURI(lastTokenId, tokenURI);
-       rand = randomNumber % 7776;
-       tokenIdToRand[lastTokenId] = rand;
-       tokenIdToVoid[lastTokenId] = indexToVoid(rand);
+       tokenIdToOwner[lastTokenId] = voidOwner;
+       if (lastTokenId == 512) {
+           tokenIdToRand[lastTokenId] = 0;
+           tokenIdToVoid[lastTokenId] = indexToVoid(0);
+       } else {
+           rand = randomNumber % 7776;
+           tokenIdToRand[lastTokenId] = rand;
+           tokenIdToVoid[lastTokenId] = indexToVoid(rand);
+       }
        requestIdToTokenId[requestId] = lastTokenId;
        tokenCounter = tokenCounter + 1;
-
     }
 
-    function setTokenURI(uint256 tokenId, string memory _tokenURI) public 
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) onlyOwner public 
     {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: transfer caller is not owner nor approved"
-        );
         _setTokenURI(tokenId, _tokenURI);
     }
 
+    function burn(uint256 tokenId) public {
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: burn caller is not owner nor approved"
+        );
+        _burn(tokenId);
+    }
 }

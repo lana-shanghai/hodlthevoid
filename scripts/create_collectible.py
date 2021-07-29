@@ -14,7 +14,7 @@ def main():
     fund_with_link(dogeviathan.address)
 
     amount = dogeviathan.getVoidPrice()
-    transaction = dogeviathan.createCollectible("None", {"from": dev, "value": amount})
+    transaction = dogeviathan.createCollectible({"from": dev, "value": amount})
     print("Waiting on second transaction...")
     # wait for the 2nd transaction
     transaction.wait(1)

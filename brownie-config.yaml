@@ -9,6 +9,7 @@ compiler:
 networks:
   default: development
 wallets:
+  from_attacker_key: ${ATTACKER_KEY}
   from_key: ${PRIVATE_KEY}
   from_mnemonic: ${MNEMONIC}
 networks:

@@ -23,11 +23,10 @@ def main():
 
 def set_tokenURI(token_id, nft_contract, tokenURI):
     dev = accounts.add(config["wallets"]["from_key"])
-    nft_contract.setTokenURI(token_id, tokenURI, {"from": dev})
+    attacker = accounts.add(config["wallets"]["from_attacker_key"])
+    nft_contract.setTokenURI(token_id, tokenURI, {"from": attacker})
     print(
         "Awesome! You can view your NFT at {} id {}".format(nft_contract.address, token_id)
         )
 
     print('Please give up to 20 minutes, and hit the "refresh metadata" button')
-
-
