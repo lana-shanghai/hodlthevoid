@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from brownie import Dogeviathan, accounts, network, config
-from metadata import sample_metadata
+from pathlib import Path
 
 
 
@@ -12,11 +12,17 @@ def main():
         "The number of tokens you've deployed is: "
         + str(number_of_voids)
     )
-    for token_id in range(number_of_voids):
+    for token_id in range(1,number_of_voids):
         if not dogeviathan.tokenURI(token_id).startswith("https://"):
             print("Setting tokenURI of {}".format(token_id))
-            set_tokenURI(token_id, dogeviathan,
-                         "https://gateway.pinata.cloud/ipfs/QmTobGXfo7Rymx1mWfA11aXgVEVg2M2gN8gqEwownmL2P8")
+            metadata_file_name = (
+            "./metadata/{}/".format(network.show_active())
+            + str(token_id)
+            + ".json"
+            )
+            if Path(metadata_file_name).exists():
+                set_tokenURI(token_id, dogeviathan,
+                         "https://gateway.pinata.cloud/ipfs/QmeBhu8dcrCLdaVFd6KNyQ8oYnTyUb2MWPBuYJrt3UopRb")
         else:
             print("Skipping {}, we already set that tokenURI!".format(token_id))
 
