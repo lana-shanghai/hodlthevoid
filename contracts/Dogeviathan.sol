@@ -14,6 +14,7 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
     uint256 public rand;
     uint256 public constant FIRST_BATCH_SUPPLY = 513;
     uint256 public constant SALE_START_TIMESTAMP = 1617580800; // TODO
+    address public constant safe = 0x006263cdb30bC000b3f68d11a95d1767d57D0657;
     struct Void {
         uint256 mobility;
         uint256 energy;
@@ -38,7 +39,8 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
         lastPrice = 0.01 * 10 ** 18; // initial price is 0.01 ETH
     }
     
-    function withdraw() onlyOwner public {
+    function withdraw() public {
+        require(msg.sender == safe);
         uint balance = address(this).balance;
         msg.sender.transfer(balance);
     }
@@ -118,5 +120,8 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
             "ERC721: burn caller is not owner nor approved"
         );
         _burn(tokenId);
+        tokenIdToRand[tokenId] = 0;
+        tokenIdToVoid[tokenId] = indexToVoid(0);
+        tokenIdToOwner[tokenId] = address(0);
     }
 }

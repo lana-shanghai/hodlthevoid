@@ -10,4 +10,7 @@ def main():
 
     for t in range(0, counter):
         print("Counter {}, random number {}, Void {}, owner {}".format(
-            t, dogeviathan.tokenIdToRand(t), dogeviathan.tokenIdToVoid(t), dogeviathan.tokenIdToOwner(t)))
+            t, 
+            dogeviathan.tokenIdToRand(t), 
+            dogeviathan.tokenIdToVoid(t), 
+            dogeviathan.tokenIdToOwner(t)))
