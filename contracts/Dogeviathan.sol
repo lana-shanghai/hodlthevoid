@@ -97,7 +97,7 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
        uint256 lastTokenId = tokenCounter;
        _safeMint(voidOwner, lastTokenId);
        tokenIdToOwner[lastTokenId] = voidOwner;
-       if (lastTokenId == 512) {
+       if (lastTokenId == FIRST_BATCH_SUPPLY - 1) {
            tokenIdToRand[lastTokenId] = 0;
            tokenIdToVoid[lastTokenId] = indexToVoid(0);
        } else {
