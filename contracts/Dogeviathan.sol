@@ -4,8 +4,10 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
+import "./utils/SafeMathOuter.sol";
 
 contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
+    using SafeMathOuter for uint256;
 
     bytes32 internal keyHash;
     uint256 public fee;
@@ -65,24 +67,24 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
 
     function indexToVoid(uint256 idx) public returns (Void memory) {
         uint256 r_0 = idx % 1296;
-        uint256 a_0 = (idx - r_0) / 1296; // TODO replace with sub
+        uint256 a_0 = idx.sub_outer(r_0) / 1296;
         uint256 r_1 = r_0 % 216;
-        uint256 a_1 = (r_0 - r_1) / 216;
+        uint256 a_1 = r_0.sub_outer(r_1) / 216;
         uint256 r_2 = r_1 % 36;
-        uint256 a_2 = (r_1 - r_2) / 36;
+        uint256 a_2 = r_1.sub_outer(r_2) / 36;
         uint256 r_3 = r_2 % 6;
-        uint256 a_3 = (r_2 - r_3) / 6;
+        uint256 a_3 = r_2.sub_outer(r_3) / 6;
         uint256 a_4 = r_3;
         return Void(a_0, a_1, a_2, a_3, a_4);   
     }
 
     function voidToIndex(Void memory void) public returns (uint256) {
         return 
-            void.justice + // TODO replace with add and mul
-            void.codex * 6 + 
-            void.oxygen * 36 + 
-            void.energy * 216 + 
-            void.mobility * 1296;
+            void.justice +
+            void.codex.mul_outer(6) + 
+            void.oxygen.mul_outer(36) + 
+            void.energy.mul_outer(216) + 
+            void.mobility.mul_outer(1296);
     }
 
     function randToVoid(uint256 r) public returns (Void memory) {
