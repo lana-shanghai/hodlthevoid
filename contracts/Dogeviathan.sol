@@ -16,7 +16,7 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
     uint256 public rand;
     uint256 public constant FIRST_BATCH_SUPPLY = 513;
     uint256 public constant SALE_START_TIMESTAMP = 1617580800; // TODO
-    address public constant safe = 0x006263cdb30bC000b3f68d11a95d1767d57D0657;
+    address public constant safe = 0x4B6250BFF504C9B6966d98543dD407315f220345;
     struct Void {
         uint256 mobility;
         uint256 energy;
@@ -54,7 +54,7 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
     }
 
     function createCollectible()
-    public payable returns (bytes32) 
+    public payable returns (bytes32)
     {
         require(block.timestamp >= SALE_START_TIMESTAMP, "Sale has not started");
         require(tokenCounter < FIRST_BATCH_SUPPLY, "First batch has been sold out");
@@ -75,15 +75,15 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
         uint256 r_3 = r_2 % 6;
         uint256 a_3 = r_2.sub_outer(r_3) / 6;
         uint256 a_4 = r_3;
-        return Void(a_0, a_1, a_2, a_3, a_4);   
+        return Void(a_0, a_1, a_2, a_3, a_4);
     }
 
     function voidToIndex(Void memory void) public returns (uint256) {
-        return 
+        return
             void.justice +
-            void.codex.mul_outer(6) + 
-            void.oxygen.mul_outer(36) + 
-            void.energy.mul_outer(216) + 
+            void.codex.mul_outer(6) +
+            void.oxygen.mul_outer(36) +
+            void.energy.mul_outer(216) +
             void.mobility.mul_outer(1296);
     }
 
@@ -111,7 +111,7 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
        tokenCounter = tokenCounter + 1;
     }
 
-    function setTokenURI(uint256 tokenId, string memory _tokenURI) onlyOwner public 
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) onlyOwner public
     {
         _setTokenURI(tokenId, _tokenURI);
     }
