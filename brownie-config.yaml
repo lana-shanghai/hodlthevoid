@@ -21,3 +21,10 @@ networks:
     oracle: '0x7AFe1118Ea78C1eae84ca8feE5C65Bc76CcF879e'
     jobId: '6d1bfe27e7034b1d87b5270556b17277'
     eth_usd_price_feed: '0x8A753747A1Fa494EC906cE90E9f37563A8AF630e'
+  mainnet:
+    vrf_coordinator: '0x3d2341ADb2D31f1c5530cDC622016af293177AE0'
+    link_token: '0xb0897686c545045aFc77CF20eC7A532E3120E0F1'
+    keyhash: '0xf86195cf7690c55907b2b611ebb7343a6f649bff128701cc542f0569e2c549da'
+    fee: 100000000000000
+    oracle: '0xf8e34b76b89ddf0ad6e0812d180af4e0cc925a6f'
+    jobId: 'd92461c4d60442539a49e12578dc712f'
