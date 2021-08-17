@@ -101,11 +101,11 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
        tokenIdToOwner[lastTokenId] = voidOwner;
        if (lastTokenId == FIRST_BATCH_SUPPLY - 1) {
            tokenIdToRand[lastTokenId] = 0;
-           tokenIdToVoid[lastTokenId] = indexToVoid(0);
+           // tokenIdToVoid[lastTokenId] = indexToVoid(0);
        } else {
-           rand = randomNumber % 7776;
+           // rand = randomNumber % 7776;
            tokenIdToRand[lastTokenId] = rand;
-           tokenIdToVoid[lastTokenId] = indexToVoid(rand);
+           // tokenIdToVoid[lastTokenId] = indexToVoid(rand);
        }
        requestIdToTokenId[requestId] = lastTokenId;
        tokenCounter = tokenCounter + 1;
@@ -122,8 +122,8 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
             "ERC721: burn caller is not owner nor approved"
         );
         _burn(tokenId);
-        tokenIdToRand[tokenId] = 0;
-        tokenIdToVoid[tokenId] = indexToVoid(0);
+        // tokenIdToRand[tokenId] = 0;
+        // tokenIdToVoid[tokenId] = indexToVoid(0);
         tokenIdToOwner[tokenId] = address(0);
     }
 }
