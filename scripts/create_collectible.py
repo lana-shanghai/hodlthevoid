@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 from brownie import web3
-from brownie import Dogeviathan, accounts, config
+from brownie import Dogeviathan, DogeviathanBasic, accounts, config
 from scripts.helpful_scripts import fund_with_link
 import time
 from metadata import sample_metadata
 
 # contract_address = web3.toChecksumAddress(0xa7F8C00459E23bb618C11e847e9eBd6238883c49)
 
+'''
 def main():
     dev = accounts.add(config["wallets"]["from_key"])
     dogeviathan = Dogeviathan[len(Dogeviathan) - 1]
@@ -31,3 +32,16 @@ def main():
         dogeviathan.randToVoid(real_rand, {"from": dev})
         print("Void {}".format(dogeviathan.tokenIdToVoid(t)))
 
+'''
+
+def main():
+    dev = accounts.add(config["wallets"]["from_key"])
+    dogeviathan_basic = DogeviathanBasic[len(DogeviathanBasic) - 1]
+
+    amount = dogeviathan_basic.getVoidPrice()
+    transaction = dogeviathan_basic.createCollectible({"from": dev, "value": amount})
+    print("Transaction... {}".format(transaction))
+    
+    counter = dogeviathan_basic.tokenCounter()
+    print("Counter {}".format(counter))
+    

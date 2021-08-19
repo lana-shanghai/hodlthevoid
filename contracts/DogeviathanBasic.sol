@@ -3,17 +3,13 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
 import "./utils/SafeMathOuter.sol";
 
-contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
+contract DogeviathanBasic is Ownable, ERC721 {
     using SafeMathOuter for uint256;
 
-    bytes32 internal keyHash;
-    uint256 public fee;
     uint256 public tokenCounter;
     uint256 public lastPrice;
-    uint256 public rand;
     uint256 public constant FIRST_BATCH_SUPPLY = 513;
     uint256 public constant SALE_START_TIMESTAMP = 1617580800; // TODO
     address public constant safe = 0x4B6250BFF504C9B6966d98543dD407315f220345;
@@ -24,19 +20,14 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
         uint256 codex;
         uint256 justice;
     }
-    mapping(bytes32 => address) public requestIdToSender;
     mapping(uint256 => Void) public tokenIdToVoid;
     mapping(uint256 => address) public tokenIdToOwner;
     mapping(uint256 => uint256) public tokenIdToRand;
-    mapping(bytes32 => uint256) public requestIdToTokenId;
-    event requestedCollectible(bytes32 indexed requestId);
+    event createdCollectible(uint256 tokenId);
 
-    constructor(address _VRFCoordinator, address _LinkToken, bytes32 _keyhash) public
-    VRFConsumerBase(_VRFCoordinator, _LinkToken)
+    constructor() public
     ERC721("HodlTheVoid", "HTV")
     {
-        keyHash = _keyhash;
-        fee = 0.1 * 10 ** 18; // 0.1 LINK
         tokenCounter = 0;
         lastPrice = 0.01 * 10 ** 18; // initial price is 0.01 ETH
     }
@@ -54,15 +45,26 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
     }
 
     function createCollectible()
-    public payable returns (bytes32)
+    public payable returns (uint256)
     {
         require(block.timestamp >= SALE_START_TIMESTAMP, "Sale has not started");
         require(tokenCounter < FIRST_BATCH_SUPPLY, "First batch has been sold out");
         require(getVoidPrice() == msg.value, "Ether value sent is not correct");
+        uint256 lastTokenId = tokenCounter;
+        address voidOwner = msg.sender;
+        if (lastTokenId == FIRST_BATCH_SUPPLY - 1) {
+            tokenIdToRand[lastTokenId] = 0;
+            tokenIdToVoid[lastTokenId] = indexToVoid(0);
+        } else {
+            uint256 r = uint(keccak256(abi.encodePacked(voidOwner, msg.value))) % 7776;
+            tokenIdToRand[lastTokenId] = r;
+            tokenIdToVoid[lastTokenId] = indexToVoid(r);
+        }
+        _safeMint(voidOwner, lastTokenId);
         lastPrice = lastPrice * 1008 / 1000;
-        bytes32 requestId = requestRandomness(keyHash, fee);
-        requestIdToSender[requestId] = msg.sender;
-        emit requestedCollectible(requestId);
+        tokenIdToOwner[lastTokenId] = voidOwner;
+        emit createdCollectible(lastTokenId);
+        tokenCounter = tokenCounter + 1;
     }
 
     function indexToVoid(uint256 idx) public returns (Void memory) {
@@ -85,30 +87,6 @@ contract Dogeviathan is Ownable, ERC721, VRFConsumerBase {
             void.oxygen.mul_outer(36) +
             void.energy.mul_outer(216) +
             void.mobility.mul_outer(1296);
-    }
-
-    function randToVoid(uint256 r) public returns (Void memory) {
-        Void memory newVoid = indexToVoid(r);
-        return newVoid;
-    }
-
-    function fulfillRandomness(bytes32 requestId, uint256 randomNumber)
-    internal override
-    {
-       address voidOwner = requestIdToSender[requestId];
-       uint256 lastTokenId = tokenCounter;
-       _safeMint(voidOwner, lastTokenId);
-       tokenIdToOwner[lastTokenId] = voidOwner;
-       if (lastTokenId == FIRST_BATCH_SUPPLY - 1) {
-           tokenIdToRand[lastTokenId] = 0;
-           tokenIdToVoid[lastTokenId] = indexToVoid(0);
-       } else {
-           rand = randomNumber % 7776;
-           tokenIdToRand[lastTokenId] = rand;
-           tokenIdToVoid[lastTokenId] = indexToVoid(rand);
-       }
-       requestIdToTokenId[requestId] = lastTokenId;
-       tokenCounter = tokenCounter + 1;
     }
 
     function setTokenURI(uint256 tokenId, string memory _tokenURI) onlyOwner public
