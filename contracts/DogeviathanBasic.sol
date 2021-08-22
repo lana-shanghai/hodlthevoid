@@ -11,7 +11,8 @@ contract DogeviathanBasic is Ownable, ERC721 {
     uint256 public tokenCounter;
     uint256 public lastPrice;
     uint256 public constant FIRST_BATCH_SUPPLY = 513;
-    uint256 public constant SALE_START_TIMESTAMP = 1617580800; // TODO
+    // uint256 public constant SALE_START_TIMESTAMP = 1617580800; // TODO
+    uint256 public constant SALE_START_TIMESTAMP = 1629738000; // TODO
     address public constant safe = 0x4B6250BFF504C9B6966d98543dD407315f220345;
     struct Void {
         uint256 mobility;
