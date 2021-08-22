@@ -61,7 +61,7 @@ contract DogeviathanBasic is Ownable, ERC721 {
             tokenIdToVoid[lastTokenId] = indexToVoid(r);
         }
         _safeMint(voidOwner, lastTokenId);
-        lastPrice = lastPrice * 1008 / 1000;
+        lastPrice = lastPrice * 1010 / 1000;
         tokenIdToOwner[lastTokenId] = voidOwner;
         emit createdCollectible(lastTokenId);
         tokenCounter = tokenCounter + 1;
